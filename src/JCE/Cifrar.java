@@ -60,7 +60,7 @@ public class Cifrar {
             cipher.init(Cipher.DECRYPT_MODE, sKey);
             decryptedData = cipher.doFinal(data);
         } catch (Exception ex) {
-            System.err.println("Error xifrant les dades: " + ex);
+            System.err.println("Error desxifrant les dades: " + ex);
         }
         return decryptedData;
     }
