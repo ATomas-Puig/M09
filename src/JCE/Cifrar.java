@@ -1,5 +1,6 @@
 package JCE;
 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
@@ -10,6 +11,7 @@ import java.util.Arrays;
 
 public class Cifrar {
 
+    //Ejercicio 1.1
     public static SecretKey keygenKeyGeneration(int keySize) {
         SecretKey sKey = null;
         if ((keySize == 128) || (keySize == 192) || (keySize == 256)) {
@@ -17,7 +19,6 @@ public class Cifrar {
                 KeyGenerator kgen = KeyGenerator.getInstance("AES");
                 kgen.init(keySize);
                 sKey = kgen.generateKey();
-
             } catch (NoSuchAlgorithmException ex) {
                 System.err.println("Generador no disponible.");
             }
@@ -25,6 +26,7 @@ public class Cifrar {
         return sKey;
     }
 
+    //Ejercicio 1.2
     public static SecretKey passwordKeyGeneration(String text, int keySize) {
         SecretKey sKey = null;
         if ((keySize == 128) || (keySize == 192) || (keySize == 256)) {
@@ -41,6 +43,7 @@ public class Cifrar {
         return sKey;
     }
 
+    //Ejercicio 1.3
     public static byte[] encryptData(SecretKey sKey, byte[] data) {
         byte[] encryptedData = null;
         try {
@@ -53,13 +56,14 @@ public class Cifrar {
         return encryptedData;
     }
 
-    public static byte[] decryptData(SecretKey sKey, byte[] data) {
+    //Ejercicio 1.4
+    public static byte[] decryptData(SecretKey sKey, byte[] data) throws BadPaddingException {
         byte[] decryptedData = null;
         try {
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
             cipher.init(Cipher.DECRYPT_MODE, sKey);
             decryptedData = cipher.doFinal(data);
-        } catch (Exception ex) {
+        }catch (Exception ex) {
             System.err.println("Error desxifrant les dades: " + ex);
         }
         return decryptedData;

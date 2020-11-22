@@ -1,5 +1,8 @@
 package JCE;
 
+import sun.awt.image.BadDepthException;
+
+import javax.crypto.BadPaddingException;
 import javax.crypto.SecretKey;
 import java.io.*;
 import java.nio.file.Files;
@@ -8,42 +11,96 @@ import java.nio.file.Paths;
 
 public class EjerciciosDeCifrado {
 
-    public static void main(String[] args) {
+    private String line;
+
+    public static void main(String[] args) throws BadPaddingException {
 
         SecretKey key1 = Cifrar.keygenKeyGeneration(128);
         SecretKey key2 = Cifrar.passwordKeyGeneration("Ácido desoxirribonucleico", 128);
+        SecretKey key3 = Cifrar.passwordKeyGeneration("Hola Jordi", 128);
 
         {
-            try {
+            /*//try {
+                //Ejercicio 1.5
                 //Cifrar archivo con una clave de 128 bits con keygenKeyGeneration:
-                /*Path pathCifrar = Paths.get("C:\\Users\\Antonio\\resultado.csv");
+                Path pathCifrar = Paths.get("C:\\Users\\Antonio\\resultado.csv");
                 byte[] primerArchivo = Files.readAllBytes(pathCifrar);
-                FileWriter archivoCifrado = new FileWriter("C:\\Users\\Antonio\\archivocifrado.csv");
-                archivoCifrado.write(new String(Cifrar.encryptData(key1, primerArchivo)));
+                byte[] primerArchivoCifrado = Cifrar.encryptData(key1, primerArchivo);
+                FileOutputStream archivoCifrado = new FileOutputStream("C:\\Users\\Antonio\\archivocifrado.bin");
+                archivoCifrado.write(primerArchivoCifrado);
                 archivoCifrado.close();
 
                 //Descifrar archivo con una clave de 128 bits con decryptData:
-                Path pathDescifrar = Paths.get("C:\\Users\\Antonio\\archivocifrado.csv");
+                Path pathDescifrar = Paths.get("C:\\Users\\Antonio\\archivocifrado.bin");
                 byte[] segundoArchivo = Files.readAllBytes(pathDescifrar);
-                //String segundo = new String(segundoArchivo);
-                //System.out.println(segundo);
+                byte[] segundoArchivoDescifrado = Cifrar.decryptData(key1, segundoArchivo);
+                String stringDescifrado = new String(segundoArchivoDescifrado);
                 FileWriter archivoDescifrado = new FileWriter("C:\\Users\\Antonio\\archivodescifrado.csv");
-                archivoDescifrado.write(new String(Cifrar.decryptData(key1, segundoArchivo)));
-                archivoDescifrado.close();*/
+                archivoDescifrado.write(stringDescifrado);
+                archivoDescifrado.close();
 
-                String frase = "Hola qué tal.";
-                byte[] fraseBytes = frase.getBytes();
-                String fraseEncriptada = new String(Cifrar.encryptData(key1, fraseBytes), "UTF-8");
+                //Ejercicio 1.6
+                //Cifrar un archivo con una clave generada a partir de un password:
+                Path pathCifrarContrasenya = Paths.get("C:\\Users\\Antonio\\resultado.csv");
+                byte[] tercerArchivo = Files.readAllBytes(pathCifrarContrasenya);
+                byte[] tercerArchivoCifrado = Cifrar.encryptData(key2, tercerArchivo);
+                FileOutputStream archivoCifradoContrasenya = new FileOutputStream("C:\\Users\\Antonio\\archivocifradoconcontrasenya.bin");
+                archivoCifradoContrasenya.write(tercerArchivoCifrado);
+                archivoCifradoContrasenya.close();
 
-                byte[] frase2Bytes = fraseEncriptada.getBytes("UTF-8");
-                String fraseDesencriptada = new String(Cifrar.decryptData(key1, frase2Bytes));
-                System.out.println(fraseDesencriptada);
+                //Descifrar un archivo con una clave generada a partir de un password:
+                Path pathDescifrarContrasenya = Paths.get("C:\\Users\\Antonio\\archivocifradoconcontrasenya.bin");
+                byte[] cuartoArchivo = Files.readAllBytes(pathDescifrarContrasenya);
+                byte[] cuartoArchivoDescifrado = Cifrar.decryptData(key2, cuartoArchivo);
+                String stringDescifradoContrasenya = new String(cuartoArchivoDescifrado);
+                FileWriter archivoDescifradoContrasenya = new FileWriter("C:\\Users\\Antonio\\archivodescifradoconcontrasenya.csv");
+                archivoDescifradoContrasenya.write(stringDescifradoContrasenya);
+                archivoDescifradoContrasenya.close();
+
+                //Ejercicio 1.8 (Ejercicio comentado para que no salte el error)
+                //Descifrar el archivo del ejercicio 1.6 con una palabra clave incorrecta:
+                *//*Path pathDescifrarContrasenyaIncorrecta = Paths.get("C:\\Users\\Antonio\\archivocifradoconcontrasenya.bin");
+                byte[] quintoArchivo = Files.readAllBytes(pathDescifrarContrasenyaIncorrecta);
+                byte[] quintoArchivoDescifrado = Cifrar.decryptData(key3, quintoArchivo);
+                String stringDescifradoContrasenyaIncorrecta = new String(quintoArchivoDescifrado);
+                FileWriter archivoDescifradoContrasenyaIncorrecta = new FileWriter("C:\\Users\\Antonio\\archivodescifradoconcontrasenya.csv");
+                archivoDescifradoContrasenyaIncorrecta.write(stringDescifradoContrasenyaIncorrecta);
+                archivoDescifradoContrasenyaIncorrecta.close();*//*
+
+                //Ejercicio 2
+                //Descifrar un texto escondido a partir de una contraseña contenida en un archivo:*/
+
+            try {
+                Path textAmagat = Paths.get("C:\\Users\\Antonio\\textamagat");
+                byte[] textAmagatCifrado = Files.readAllBytes(textAmagat);
+                FileReader reader = new FileReader("C:\\Users\\Antonio\\clausA4.txt");
+                BufferedReader bfReader = new BufferedReader(reader);
+                String line = bfReader.readLine();
 
 
+                while (line != null) {
 
-            } catch (Exception e) {
+                    try {
+                        System.out.println(line);
+                        SecretKey key = Cifrar.passwordKeyGeneration(line, 128);
+                        byte[] textAmagatDescifrado = Cifrar.decryptData(key, textAmagatCifrado);
+                        String texto = new String(textAmagatDescifrado);
+                        System.out.println(texto);
+                        line = bfReader.readLine();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (BadPaddingException e){
+                        continue;
+                    }
+                }
+            } catch (IOException e) {
                 e.printStackTrace();
             }
+
+
+            // } catch (Exception e) {
+             //   e.printStackTrace();
+           // }
         }
 
     }
