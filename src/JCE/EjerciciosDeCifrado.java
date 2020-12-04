@@ -8,6 +8,12 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.KeyPair;
+import java.security.KeyStore;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.cert.CertificateException;
+import java.util.Scanner;
 
 public class EjerciciosDeCifrado {
 
@@ -22,6 +28,7 @@ public class EjerciciosDeCifrado {
             try {
                 //Ejercicio 1.5
                 //Cifrar archivo con una clave de 128 bits con keygenKeyGeneration:
+                System.out.println("Práctica 4 - Ejercicio 1.5:");
                 Path pathCifrar = Paths.get("C:\\Users\\Antonio\\resultado.csv");
                 byte[] primerArchivo = Files.readAllBytes(pathCifrar);
                 byte[] primerArchivoCifrado = Cifrar.encryptData(key1, primerArchivo);
@@ -46,6 +53,8 @@ public class EjerciciosDeCifrado {
             try {
                 //Ejercicio 1.6
                 //Cifrar un archivo con una clave generada a partir de un password:
+                System.out.println();
+                System.out.println("Práctica 4 - Ejercicio 1.6:");
                 Path pathCifrarContrasenya = Paths.get("C:\\Users\\Antonio\\resultado.csv");
                 byte[] tercerArchivo = Files.readAllBytes(pathCifrarContrasenya);
                 byte[] tercerArchivoCifrado = Cifrar.encryptData(key2, tercerArchivo);
@@ -69,6 +78,8 @@ public class EjerciciosDeCifrado {
 
             //Ejercicio 1.7
             //Probar algunos de los métodos de la clase SecretKey:
+            System.out.println();
+            System.out.println("Práctica 4 - Ejercicio 1.7:");
             System.out.println(key1.getAlgorithm());
             System.out.println(key2.getEncoded());
             System.out.println(key3.getFormat());
@@ -79,6 +90,8 @@ public class EjerciciosDeCifrado {
             try {
                 //Ejercicio 1.8
                 //Descifrar el archivo del ejercicio 1.6 con una palabra clave incorrecta:
+                System.out.println();
+                System.out.println("Práctica 4 - Ejercicio 1.8:");
                 Path pathDescifrarContrasenyaIncorrecta = Paths.get("C:\\Users\\Antonio\\archivocifradoconcontrasenya.bin");
                 byte[] quintoArchivo = Files.readAllBytes(pathDescifrarContrasenyaIncorrecta);
                 byte[] quintoArchivoDescifrado = Cifrar.decryptData(key3, quintoArchivo);
@@ -94,7 +107,8 @@ public class EjerciciosDeCifrado {
 
             //Ejercicio 2
             //Descifrar un texto escondido a partir de una contraseña contenida en un archivo:*/
-
+            System.out.println();
+            System.out.println("Práctica 4 - Ejercicio 2:");
             try {
                 Path textAmagat = Paths.get("C:\\Users\\Antonio\\textamagat");
                 byte[] textAmagatCifrado = Files.readAllBytes(textAmagat);
@@ -121,5 +135,108 @@ public class EjerciciosDeCifrado {
 
         }
 
+        //------------------Práctica 5 -------------------------
+        //Ejercicio 1.1.i
+        System.out.println();
+        System.out.println("Práctica 5 - Ejercicio 1.1.i:");
+        KeyPair keyPair = Cifrar.randomGenerate(1024);
+        byte[] stringClear = "Ésta es una prueba de cifrado con par de claves".getBytes();
+        byte[] stringCifrado = Cifrar.encryptData(stringClear, keyPair.getPublic());
+        System.out.println("Frase encriptada: " + new String(stringCifrado));
+        byte[] stringDescifrado = Cifrar.decryptData(stringCifrado, keyPair.getPrivate());
+        System.out.println("Frase desencriptada: " + new String(stringDescifrado));
+
+        //Ejercicio 1.1.ii
+        System.out.println();
+        System.out.println("Práctica 5 - Ejercicio 1.1.ii:");
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Introduce la frase que quieras cifrar:");
+        byte[] fraseClear = scanner.nextLine().getBytes();
+        byte[] fraseCifrada = Cifrar.encryptData(fraseClear, keyPair.getPublic());
+        System.out.println("Frase encriptada: " + new String(fraseCifrada));
+        byte[] fraseDescifrada = Cifrar.decryptData(fraseCifrada, keyPair.getPrivate());
+        System.out.println("Frase desencriptada: " + new String(fraseDescifrada));
+
+        //Ejercicio 1.1.iii
+        System.out.println();
+        System.out.println("Práctica 5 - Ejercicio 1.1.iii:");
+        System.out.println("Información de la clave pública:");
+        System.out.println(keyPair.getPublic().getAlgorithm());
+        System.out.println(keyPair.getPublic().getEncoded());
+        System.out.println(keyPair.getPublic().getClass());
+        System.out.println(keyPair.getPublic().getFormat());
+        System.out.println("Información de la clave privada:");
+        System.out.println(keyPair.getPrivate().getAlgorithm());
+        System.out.println(keyPair.getPrivate().getEncoded());
+        System.out.println(keyPair.getPrivate().getClass());
+        System.out.println(keyPair.getPrivate().getFormat());
+
+        //Ejercicio 1.2.i
+        System.out.println();
+        System.out.println("Práctica 5 - Ejercicio 1.2.i:");
+        try {
+            KeyStore keyStore = Cifrar.loadKeyStore("C:\\Users\\Antonio\\keystore_nickname.ks", "Hola87");
+            //Ejercicio 1.2.i.1
+            System.out.println("Práctica 5 - Ejercicio 1.2.i.1 - Tipo de Keystore:");
+            System.out.println(keyStore.getType());
+            //Ejercicio 1.2.i.2
+            System.out.println("Práctica 5 - Ejercicio 1.2.i.2 - Medida del Keystore:");
+            System.out.println(keyStore.size());
+            //Ejercicio 1.2.i.1
+            System.out.println("Práctica 5 - Ejercicio 1.2.i.3 - Alias dentro del Keystore:");
+            System.out.println(keyStore.aliases());
+            //Ejercicio 1.2.i.1
+            System.out.println("Práctica 5 - Ejercicio 1.2.i.4 - Certificado de una de las claves:");
+            System.out.println(keyStore.getCertificate("lamevaclaum9"));
+            //Ejercicio 1.2.i.1
+            System.out.println("Práctica 5 - Ejercicio 1.2.i.5 - Algoritmo de cifrado de una de las claves:");
+            System.out.println(keyStore.getCertificate("lamevaclaum9").getPublicKey().getAlgorithm());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        //Ejercicio 1.2.ii
+        System.out.println();
+        System.out.println("Práctica 5 - Ejercicio 1.2.ii:");
+        try {
+            SecretKey key4 = Cifrar.keygenKeyGeneration(128);
+            KeyStore keyStore = Cifrar.loadKeyStore("C:\\Users\\Antonio\\keystore_nickname.ks", "Hola87");
+            KeyStore.ProtectionParameter protectionParameter = new KeyStore.PasswordProtection("Hola87".toCharArray());
+            KeyStore.SecretKeyEntry secretKeyEntry = new KeyStore.SecretKeyEntry(key4);
+            keyStore.setEntry("Ejercicio 1.2.ii",secretKeyEntry,protectionParameter);
+            FileOutputStream fileOutputStream = new FileOutputStream("C:\\Users\\Antonio\\keystore_nickname.ks");
+            keyStore.store(fileOutputStream, "Hola87".toCharArray());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        //Ejercicio 1.3
+        System.out.println();
+        System.out.println("Práctica 5 - Ejercicio 1.3:");
+        try {
+            System.out.println(Cifrar.getPublicKey("C:\\Users\\Antonio\\antonio.crt"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        //Ejercicio 1.4
+        System.out.println();
+        System.out.println("Práctica 5 - Ejercicio 1.4:");
+        try {
+            KeyStore keyStore = Cifrar.loadKeyStore("C:\\Users\\Antonio\\keystore_nickname.ks", "Hola87");
+            System.out.println(Cifrar.getPublicKey(keyStore, "lamevaclaum9", "Hola87"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        //Ejercicio 1.5
+        System.out.println();
+        System.out.println("Práctica 5 - Ejercicio 1.5:");
+        PrivateKey privateKey = keyPair.getPrivate();
+        try{
+            System.out.println(new String(Cifrar.signData("Hola amigos".getBytes(),privateKey)));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }
