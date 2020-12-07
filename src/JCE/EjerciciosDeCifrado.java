@@ -252,12 +252,13 @@ public class EjerciciosDeCifrado {
             e.printStackTrace();
         }
 
-        //Ejercicio 2.2
+        //Ejercicios 2.1 y 2.2
         System.out.println();
-        System.out.println("Práctica 5 - Ejercicio 2.2:");
+        System.out.println("Práctica 5 - Ejercicios 2.1 y 2.2:");
+        KeyPair keyPair1 = Cifrar.randomGenerate(1024);
         String mensajeACifrar = "WARNING: Este es un mensaje cifrado.";
-        byte[][] mensajeCifrado = Cifrar.encryptWrappedData(mensajeACifrar.getBytes(),keyPair.getPublic());
-        String mensajeDescifrado = new String(Cifrar.decryptWrappedData(mensajeCifrado,keyPair.getPrivate()));
+        byte[][] mensajeCifrado = Cifrar.encryptWrappedData(mensajeACifrar.getBytes(),keyPair1.getPublic());
+        String mensajeDescifrado = new String(Cifrar.decryptWrappedData(mensajeCifrado,keyPair1.getPrivate()));
         System.out.println(mensajeDescifrado);
     }
 }
