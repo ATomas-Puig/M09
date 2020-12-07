@@ -139,10 +139,10 @@ public class Cifrar {
     }
 
     //Ejercicio 1.4
-    public static PublicKey getPublicKey(KeyStore ks, String alias, String pwMyKey) throws Exception{
+    public static PublicKey getPublicKey(KeyStore ks, String alias, String pwMyKey) throws Exception {
         PublicKey publicKey = null;
-        Key key = ks.getKey(alias,pwMyKey.toCharArray());
-        if (key instanceof PrivateKey){
+        Key key = ks.getKey(alias, pwMyKey.toCharArray());
+        if (key instanceof PrivateKey) {
             Certificate certificate = ks.getCertificate(alias);
             publicKey = certificate.getPublicKey();
         }
@@ -176,6 +176,58 @@ public class Cifrar {
             System.err.println("Error validant les dades: " + ex);
         }
         return isValid;
+    }
+
+    //Ejercicio 2.1
+    public static byte[][] encryptWrappedData(byte[] data, PublicKey pub) {
+        byte[][] encWrappedData = new byte[2][];
+        try {
+            //Generación de clave
+            KeyGenerator kgen = KeyGenerator.getInstance("AES");
+            kgen.init(128);
+            //Clave simétrica
+            SecretKey sKey = kgen.generateKey();
+
+            //Encriptación de datos con la clave simétrica
+            Cipher cipher = Cipher.getInstance("AES");
+            cipher.init(Cipher.ENCRYPT_MODE, sKey);
+            byte[] encMsg = cipher.doFinal(data);
+
+            //Envoltura de clave privada con la clave pública
+            cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+            cipher.init(Cipher.WRAP_MODE, pub);
+            byte[] encKey = cipher.wrap(sKey);
+
+            //Inserción de mensaje y clave cifrados en array bidimensional de bytes
+            encWrappedData[0] = encMsg;
+            encWrappedData[1] = encKey;
+        } catch (Exception ex) {
+            System.err.println("Ha succeït un error xifrant: " + ex);
+        }
+        //Retorno del mensaje y la clave cifrados
+        return encWrappedData;
+    }
+
+    public static byte[] decryptWrappedData(byte[][] data, PrivateKey priv) {
+        byte[] decWrappedData = null;
+        try {
+            //Desenvoltura de clave simétrica con la clave privada
+            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+            cipher.init(Cipher.UNWRAP_MODE, priv);
+            Key decKey = cipher.unwrap(data[1], "AES", Cipher.SECRET_KEY);
+
+            //Descrifrado de datos con la clave simétrica desenvuelta
+            cipher = Cipher.getInstance("AES");
+            cipher.init(Cipher.DECRYPT_MODE, decKey);
+            byte[] decMsg = cipher.doFinal(data[0]);
+
+            //Inserción de datos desencriptados en un array de bytes
+            decWrappedData = decMsg;
+        } catch (Exception ex) {
+            System.err.println("Ha succeït un error desxifrant: " + ex);
+        }
+        //Retorno del mensaje descifrado
+        return decWrappedData;
     }
 }
 

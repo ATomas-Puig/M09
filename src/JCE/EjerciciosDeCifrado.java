@@ -5,6 +5,7 @@ import sun.awt.image.BadDepthException;
 import javax.crypto.BadPaddingException;
 import javax.crypto.SecretKey;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -251,5 +252,12 @@ public class EjerciciosDeCifrado {
             e.printStackTrace();
         }
 
+        //Ejercicio 2.2
+        System.out.println();
+        System.out.println("Práctica 5 - Ejercicio 2.2:");
+        String mensajeACifrar = "WARNING: Este es un mensaje cifrado.";
+        byte[][] mensajeCifrado = Cifrar.encryptWrappedData(mensajeACifrar.getBytes(),keyPair.getPublic());
+        String mensajeDescifrado = new String(Cifrar.decryptWrappedData(mensajeCifrado,keyPair.getPrivate()));
+        System.out.println(mensajeDescifrado);
     }
 }
