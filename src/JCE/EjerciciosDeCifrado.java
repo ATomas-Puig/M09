@@ -233,10 +233,23 @@ public class EjerciciosDeCifrado {
         System.out.println();
         System.out.println("Práctica 5 - Ejercicio 1.5:");
         PrivateKey privateKey = keyPair.getPrivate();
+        byte[] firma = null;
         try{
-            System.out.println(new String(Cifrar.signData("Hola amigos".getBytes(),privateKey)));
+            firma = Cifrar.signData("Hola amigos".getBytes(), privateKey);
+            System.out.println(new String(firma));
         }catch (Exception e){
             e.printStackTrace();
         }
+
+        //Ejercicio 1.6
+        System.out.println();
+        System.out.println("Práctica 5 - Ejercicio 1.6:");
+        PublicKey publicKey = keyPair.getPublic();
+        try {
+            System.out.println("¿Es válida la firma anterior? " + Cifrar.validateSignature("Hola amigos".getBytes(), firma, publicKey));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 }
