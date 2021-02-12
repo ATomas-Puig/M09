@@ -10,14 +10,17 @@ public class Testigo {
     public synchronized void Coger() {
         try {
             while (!testigoLibre) wait();
+
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         testigoLibre = false;
+
         notifyAll();
     }
 
     public synchronized void Dejar() {
+
         testigoLibre = true;
         notifyAll();
     }
